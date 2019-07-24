@@ -8,13 +8,20 @@ const FILTER_TITLES = {
   SHOW_COMPLETED: 'Completed',
 };
 
+const ORDER_TITLES = {
+  DESCENT_ORDER: 'Desc',
+  ASCENT_ORDER: 'Asc',
+};
+
 export default class Footer extends Component {
   static propTypes = {
     completedCount: PropTypes.number.isRequired,
     activeCount: PropTypes.number.isRequired,
     filter: PropTypes.string.isRequired,
+    order: PropTypes.string.isRequired,
     onClearCompleted: PropTypes.func.isRequired,
     onShow: PropTypes.func.isRequired,
+    onOrder: PropTypes.func.isRequired,
   };
 
   renderTodoCount() {
@@ -45,6 +52,21 @@ export default class Footer extends Component {
     );
   }
 
+  renderOrderLink(order) {
+    const title = ORDER_TITLES[order];
+    const { order: selectedOrder, onOrder } = this.props;
+
+    return (
+      <a
+        className={classnames({ selected: order === selectedOrder })}
+        style={{ cursor: 'pointer' }}
+        onClick={() => onOrder(order)}
+      >
+        {title}
+      </a>
+    );
+  }
+
   renderClearButton() {
     const { completedCount, onClearCompleted } = this.props;
     if (completedCount > 0) {
@@ -62,12 +84,21 @@ export default class Footer extends Component {
     ));
   }
 
+  renderOrderList() {
+    return ['DESCENT_ORDER', 'ASCENT_ORDER'].map(order => (
+      <li key={order}>{this.renderOrderLink(order)}</li>
+    ));
+  }
+
   render() {
     return (
       <footer className="footer">
         {this.renderTodoCount()}
 
-        <ul className="filters">{this.renderFilterList()}</ul>
+        <ul className="filters">
+          {this.renderFilterList()}
+          {this.renderOrderList()}
+        </ul>
 
         {this.renderClearButton()}
       </footer>

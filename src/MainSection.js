@@ -9,20 +9,30 @@ const TODO_FILTERS = {
   SHOW_COMPLETED: todo => todo.completed,
 };
 
+const TODO_ORDERS = {
+  DESCENT_ORDER: (one, another) =>
+    -1 * (new Date(one.date) - new Date(another.date)),
+  ASCENT_ORDER: (one, another) => new Date(one.date) - new Date(another.date),
+};
+
 export default class MainSection extends Component {
   static propTypes = {
     todos: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
   };
 
-  state = { filter: 'SHOW_ALL' };
+  state = { filter: 'SHOW_ALL', order: 'DESCENT_ORDER' };
 
   handleClearCompleted = () => {
     this.props.actions.clearCompleted();
   };
 
   handleShow = filter => {
-    this.setState({ filter });
+    this.setState({ ...this.state, filter });
+  };
+
+  handleOrder = order => {
+    this.setState({ ...this.state, order });
   };
 
   renderToggleAll(completedCount) {
@@ -41,7 +51,7 @@ export default class MainSection extends Component {
 
   renderFooter(completedCount) {
     const { todos } = this.props;
-    const { filter } = this.state;
+    const { filter, order } = this.state;
     const activeCount = todos.length - completedCount;
 
     if (todos.length) {
@@ -50,8 +60,10 @@ export default class MainSection extends Component {
           completedCount={completedCount}
           activeCount={activeCount}
           filter={filter}
+          order={order}
           onClearCompleted={this.handleClearCompleted.bind(this)}
           onShow={this.handleShow.bind(this)}
+          onOrder={this.handleOrder.bind(this)}
         />
       );
     }
@@ -59,9 +71,10 @@ export default class MainSection extends Component {
 
   render() {
     const { todos, actions } = this.props;
-    const { filter } = this.state;
+    const { filter, order } = this.state;
 
     const filteredTodos = todos.filter(TODO_FILTERS[filter]);
+    const orderedTodos = filteredTodos.sort(TODO_ORDERS[order]);
     const completedCount = todos.reduce((count, todo) => {
       return todo.completed ? count + 1 : count;
     }, 0);
@@ -70,7 +83,7 @@ export default class MainSection extends Component {
       <section className="main">
         {this.renderToggleAll(completedCount)}
         <ul className="todo-list">
-          {filteredTodos.map(todo => (
+          {orderedTodos.map(todo => (
             <TodoItem key={todo.id} todo={todo} {...actions} />
           ))}
         </ul>
