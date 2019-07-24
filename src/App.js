@@ -24,6 +24,7 @@ class App extends Component {
           ) + 1,
         completed: false,
         text: text,
+        date: Date().toString(),
       },
       ...this.state.todos,
     ];
@@ -36,8 +37,9 @@ class App extends Component {
   };
 
   editTodo = (id, text) => {
+    const date = Date.toString();
     const todos = this.state.todos.map(
-      todo => (todo.id === id ? { ...todo, text } : todo)
+      todo => (todo.id === id ? { ...todo, text, date } : todo)
     );
     this.setState({ todos });
   };
