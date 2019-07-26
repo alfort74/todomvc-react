@@ -19,6 +19,8 @@ export default class MainSection extends Component {
   static propTypes = {
     todos: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
+    order: PropTypes.string.isRequired,
+    onOrder: PropTypes.func.isRequired,
   };
 
   state = { filter: 'SHOW_ALL', order: 'DESCENT_ORDER' };
@@ -29,10 +31,6 @@ export default class MainSection extends Component {
 
   handleShow = filter => {
     this.setState({ ...this.state, filter });
-  };
-
-  handleOrder = order => {
-    this.setState({ ...this.state, order });
   };
 
   renderToggleAll(completedCount) {
@@ -50,8 +48,8 @@ export default class MainSection extends Component {
   }
 
   renderFooter(completedCount) {
-    const { todos } = this.props;
-    const { filter, order } = this.state;
+    const { todos, order } = this.props;
+    const { filter } = this.state;
     const activeCount = todos.length - completedCount;
 
     if (todos.length) {
@@ -63,15 +61,15 @@ export default class MainSection extends Component {
           order={order}
           onClearCompleted={this.handleClearCompleted.bind(this)}
           onShow={this.handleShow.bind(this)}
-          onOrder={this.handleOrder.bind(this)}
+          onOrder={this.props.onOrder}
         />
       );
     }
   }
 
   render() {
-    const { todos, actions } = this.props;
-    const { filter, order } = this.state;
+    const { todos, actions, order } = this.props;
+    const { filter } = this.state;
 
     const filteredTodos = todos.filter(TODO_FILTERS[filter]);
     const orderedTodos = filteredTodos.sort(TODO_ORDERS[order]);

@@ -3,7 +3,6 @@ import Header from './Header';
 import MainSection from './MainSection';
 
 const initialState = [];
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +10,7 @@ class App extends Component {
       todos: initialState,
       gameID: null,
       player: 0,
+      order: 'DESCENT_ORDER',
     };
   }
 
@@ -64,6 +64,10 @@ class App extends Component {
     this.setState({ todos });
   };
 
+  handleOrder = order => {
+    this.setState({ order });
+  };
+
   actions = {
     addTodo: this.addTodo,
     deleteTodo: this.deleteTodo,
@@ -76,8 +80,17 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header addTodo={this.actions.addTodo} />
-        <MainSection todos={this.state.todos} actions={this.actions} />
+        <Header
+          addTodo={this.actions.addTodo}
+          order={this.state.order}
+          onOrder={this.handleOrder.bind(this)}
+        />
+        <MainSection
+          todos={this.state.todos}
+          actions={this.actions}
+          order={this.state.order}
+          onOrder={this.handleOrder.bind(this)}
+        />
       </div>
     );
   }
