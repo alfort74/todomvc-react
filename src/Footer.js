@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import OrderButtonList from './OrderButtonList';
 
 const FILTER_TITLES = {
   SHOW_ALL: 'All',
   SHOW_ACTIVE: 'Active',
   SHOW_COMPLETED: 'Completed',
-};
-
-const ORDER_TITLES = {
-  DESCENT_ORDER: 'Desc',
-  ASCENT_ORDER: 'Asc',
 };
 
 export default class Footer extends Component {
@@ -52,21 +48,6 @@ export default class Footer extends Component {
     );
   }
 
-  renderOrderLink(order) {
-    const title = ORDER_TITLES[order];
-    const { order: selectedOrder, onOrder } = this.props;
-
-    return (
-      <a
-        className={classnames({ selected: order === selectedOrder })}
-        style={{ cursor: 'pointer' }}
-        onClick={() => onOrder(order)}
-      >
-        {title}
-      </a>
-    );
-  }
-
   renderClearButton() {
     const { completedCount, onClearCompleted } = this.props;
     if (completedCount > 0) {
@@ -84,12 +65,6 @@ export default class Footer extends Component {
     ));
   }
 
-  renderOrderList() {
-    return ['DESCENT_ORDER', 'ASCENT_ORDER'].map(order => (
-      <li key={order}>{this.renderOrderLink(order)}</li>
-    ));
-  }
-
   render() {
     return (
       <footer className="footer">
@@ -97,7 +72,10 @@ export default class Footer extends Component {
 
         <ul className="filters">
           {this.renderFilterList()}
-          {this.renderOrderList()}
+          <OrderButtonList
+            order={this.props.order}
+            onOrder={this.props.onOrder}
+          />
         </ul>
 
         {this.renderClearButton()}
